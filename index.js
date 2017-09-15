@@ -3,6 +3,7 @@ import graphqlHTTP from 'express-graphql';
 import { buildSchema } from 'graphql';
 import _ from 'lodash';
 import numbers from 'numbers';
+import writtenNumber from 'written-number';
 
 var schema = buildSchema(`
   type Query {
@@ -18,12 +19,7 @@ var root = {
   numberRange: ({ start = 0, end }) => _.range(start, end),
   evenNumbers: ({ start = 0, end }) => _.range(start, end, 2),
   primeNumbers: ({ start = 0, end }) => _.filter(_.range(start, end), (n) => numbers.prime.simple(n)),
-  numberRangeAsWords: ({ start = 0, end, language = 'en' }) => {
-    // TODO: Implement this
-    if(language === 'en') {
-      return ['one', 'two', 'three']
-    }
-  },
+  numberRangeAsWords: ({ start = 0, end, language = 'en' }) => _.map(_.range(start, end), (n) => writtenNumber(n, { lang: language })),
   somethingFun: () => 'Have a blast!' // TODO: Implement this
 };
 
