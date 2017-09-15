@@ -6,9 +6,14 @@ import numbers from 'numbers';
 import writtenNumber from 'written-number';
 
 var schema = buildSchema(`
+  enum Language {
+    ENGLISH
+    SPANISH
+  }
+  
   type Number {
     number: Int
-    word: String
+    word(language: Language = ENGLISH): String
   }
 
   type Query {
@@ -19,17 +24,25 @@ var schema = buildSchema(`
   }
 `);
 
-function toNumberObject(n) {
-  return {
-    number: n,
-    word: writtenNumber(n)
+const langStrings = {
+  'ENGLISH': 'en',
+  'SPANISH': 'es'
+};
+
+class Number {
+  constructor(number) {
+    this.number = number;
   };
+
+  word({ language }) {
+    return writtenNumber(this.number, {lang: langStrings[language]});
+  }
 }
 
 var root = {
-  numberRange: ({ start = 0, end }) => _.map(_.range(start, end), (n) => toNumberObject(n)),
-  evenNumbers: ({ start = 0, end }) => _.map(_.range(start, end, 2), (n) => toNumberObject(n)),
-  primeNumbers: ({ start = 0, end }) => _.map(_.filter(_.range(start, end), (n) => numbers.prime.simple(n)), (n) => toNumberObject(n)),
+  numberRange: ({ start = 0, end }) => _.map(_.range(start, end), (n) => new Number(n)),
+  evenNumbers: ({ start = 0, end }) => _.map(_.range(start, end, 2), (n) => new Number(n)),
+  primeNumbers: ({ start = 0, end }) => _.map(_.filter(_.range(start, end), (n) => numbers.prime.simple(n)), (n) => new Number(n)),
   somethingFun: () => 'Changed all queries to have the number and the word'
 };
 
