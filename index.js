@@ -2,6 +2,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { buildSchema } from 'graphql';
 import _ from 'lodash';
+import numbers from 'numbers';
 
 var schema = buildSchema(`
   type Query {
@@ -16,7 +17,7 @@ var schema = buildSchema(`
 var root = {
   numberRange: ({ start = 0, end }) => _.range(start, end),
   evenNumbers: ({ start = 0, end }) => _.range(start, end, 2),
-  primeNumbers: ({ start = 0, end }) => [1,3,5,7], // TODO: Implement this
+  primeNumbers: ({ start = 0, end }) => _.filter(_.range(start, end), (n) => numbers.prime.simple(n)),
   numberRangeAsWords: ({ start = 0, end, language = 'en' }) => {
     // TODO: Implement this
     if(language === 'en') {
