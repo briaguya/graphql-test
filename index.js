@@ -16,7 +16,7 @@ var schema = buildSchema(`
 var root = {
   numberRange: ({ start = 0, end }) => _.range(start, end),
   evenNumbers: ({ start = 0, end }) => _.range(start, end, 2),
-  primeNumbers: ({ start = 0, end }) => [1,3,5,7], // TODO: Implement this
+  primeNumbers: ({ start = 0, end }) => [2,3,5,7], // TODO: Implement this
   numberRangeAsWords: ({ start = 0, end, language = 'en' }) => {
     // TODO: Implement this
     if(language === 'en') {
