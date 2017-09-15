@@ -6,21 +6,31 @@ import numbers from 'numbers';
 import writtenNumber from 'written-number';
 
 var schema = buildSchema(`
+  type Number {
+    number: Int
+    word: String
+  }
+
   type Query {
-    numberRange(start: Int, end: Int!): [Int]
-    evenNumbers(start: Int, end: Int!): [Int]
-    primeNumbers(start: Int, end: Int!): [Int]
-    numberRangeAsWords(start: Int, end: Int!, language: String): [String]
+    numberRange(start: Int, end: Int!): [Number]
+    evenNumbers(start: Int, end: Int!): [Number]
+    primeNumbers(start: Int, end: Int!): [Number]
     somethingFun: String
   }
 `);
 
+function toNumberObject(n) {
+  return {
+    number: n,
+    word: writtenNumber(n)
+  };
+}
+
 var root = {
-  numberRange: ({ start = 0, end }) => _.range(start, end),
-  evenNumbers: ({ start = 0, end }) => _.range(start, end, 2),
-  primeNumbers: ({ start = 0, end }) => _.filter(_.range(start, end), (n) => numbers.prime.simple(n)),
-  numberRangeAsWords: ({ start = 0, end, language = 'en' }) => _.map(_.range(start, end), (n) => writtenNumber(n, { lang: language })),
-  somethingFun: () => 'Have a blast!' // TODO: Implement this
+  numberRange: ({ start = 0, end }) => _.map(_.range(start, end), (n) => toNumberObject(n)),
+  evenNumbers: ({ start = 0, end }) => _.map(_.range(start, end, 2), (n) => toNumberObject(n)),
+  primeNumbers: ({ start = 0, end }) => _.map(_.filter(_.range(start, end), (n) => numbers.prime.simple(n)), (n) => toNumberObject(n)),
+  somethingFun: () => 'Changed all queries to have the number and the word'
 };
 
 var app = express();
